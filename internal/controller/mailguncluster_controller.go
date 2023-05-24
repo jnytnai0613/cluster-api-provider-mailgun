@@ -58,21 +58,11 @@ func (r *MailgunClusterReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 		return ctrl.Result{}, err
 	}
 
-	/*
-		cluster, err := util.GetOwnerCluster(ctx, r.Client, mgCluster.ObjectMeta)
-		if err != nil {
-			logger.Error(err, fmt.Sprintf("couldn't get ownercluster %q", mgCluster.GetName()))
-			return ctrl.Result{}, err
-
-		}
-	*/
-
 	if mgCluster.Status.MessageID != nil {
 		// We already sent a message, so skip reconciliation
 		return ctrl.Result{}, nil
 	}
 
-	//subject := fmt.Sprintf("[%s] New Cluster %s requested", mgCluster.Spec.Priority, cluster.Name)
 	subject := fmt.Sprintf("[%s] New Cluster requested", mgCluster.Spec.Priority)
 	body := fmt.Sprintf("Hello! One cluster please.\n\n%s\n", mgCluster.Spec.Request)
 	requester := fmt.Sprintf("Cluster API Sandbox Provider <mailgun@%s>", mgCluster.Spec.Requester)
