@@ -1,12 +1,29 @@
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: Cluster
+metadata:
+  name: hello-mailgun
+  namespace: cluster-api-provider-mailgun-system
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks: ["192.168.0.0/16"]
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+    kind: MailgunCluster
+    name: hello-mailgun
+---
 apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
 kind: MailgunCluster
 metadata:
+  name: hello-mailgun
+  namespace: cluster-api-provider-mailgun-system
   labels:
     app.kubernetes.io/name: mailguncluster
     app.kubernetes.io/instance: mailguncluster-sample
     app.kubernetes.io/part-of: cluster-api-provider-mailgun
     app.kubernetes.io/managed-by: kustomize
     app.kubernetes.io/created-by: cluster-api-provider-mailgun
-  name: mailguncluster-sample
 spec:
-  # TODO(user): Add fields here
+  priority: "ExtremelyUrgent"
+  request: "Please make me a cluster, with sugar on top?"
+  requester: "<Your Domain>"

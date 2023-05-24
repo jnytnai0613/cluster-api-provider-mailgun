@@ -31,7 +31,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	infrastructurev1beta1 "github.com/jnytnai0613/cluster-api-provider-mailgun/api/v1beta1"
+	"github.com/BoltApp/mailgun-go/v4"
+
+	infrav1beta1 "github.com/jnytnai0613/cluster-api-provider-mailgun/api/v1beta1"
 	"github.com/jnytnai0613/cluster-api-provider-mailgun/internal/controller"
 	//+kubebuilder:scaffold:imports
 )
@@ -44,7 +46,7 @@ var (
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 
-	utilruntime.Must(infrastructurev1beta1.AddToScheme(scheme))
+	utilruntime.Must(infrav1beta1.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
 }
 
@@ -89,13 +91,35 @@ func main() {
 		os.Exit(1)
 	}
 
+	domain := os.Getenv("MAILGUN_DOMAIN")
+	if domain == "" {
+		setupLog.Info("missing required env MAILGUN_DOMAIN")
+		os.Exit(1)
+	}
+
+	apiKey := os.Getenv("MAILGUN_API_KEY")
+	if apiKey == "" {
+		setupLog.Info("missing required env MAILGUN_API_KEY")
+		os.Exit(1)
+	}
+
+	recipient := os.Getenv("MAIL_RECIPIENT")
+	if recipient == "" {
+		setupLog.Info("missing required env MAIL_RECIPIENT")
+		os.Exit(1)
+	}
+
+	mg := mailgun.NewMailgun(domain, apiKey)
+
 	if err = (&controller.MailgunClusterReconciler{
-		Client: mgr.GetClient(),
-		Scheme: mgr.GetScheme(),
+		Client:    mgr.GetClient(),
+		Mailgun:   mg,
+		Recipient: recipient,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "MailgunCluster")
 		os.Exit(1)
 	}
+
 	if err = (&controller.MailgunMachineReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
