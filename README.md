@@ -30,18 +30,18 @@ export MAIL_RECIPIENT="<Mail recipient address>"
 ```
 
 2. Build and push your image to the location specified by `IMG`:
-```sh
+```shell
 make docker-build docker-push IMG=<Your Registry>/cluster-api-provider-mailgun:tag
 ```
 
 3. Deploy the controller to the cluster with the image specified by `IMG`:
-```sh
+```shell
 make deploy IMG=<some-registry>/cluster-api-provider-mailgun:tag
 ```
 
 4. Edit Custom Resources
 Replace the .spec.requester in MailgunCluster with the Sandbox domain.
-```
+```yaml
 cat << EOT > config/samples/infrastructure_v1beta1_mailguncluster.yaml
 apiVersion: cluster.x-k8s.io/v1beta1
 kind: Cluster
@@ -76,7 +76,7 @@ EOT
 ```
 
 5. Install Instances of Custom Resources:
-```sh
+```shell
 kubectl apply -f config/samples/
 ```
 
@@ -87,14 +87,14 @@ It is also possible to check from Mailgun's Logs as follows.
 ### Uninstall CRDs
 To delete the CRDs from the cluster:
 
-```sh
+```shell
 make uninstall
 ```
 
 ### Undeploy controller
 UnDeploy the controller from the cluster:
 
-```sh
+```shell
 make undeploy
 ```
 
@@ -107,13 +107,13 @@ which provide a reconcile function responsible for synchronizing resources until
 ### Test It Out
 1. Install the CRDs into the cluster:
 
-```sh
+```shell
 make install
 ```
 
 2. Run your controller (this will run in the foreground, so switch to a new terminal if you want to leave it running):
 
-```sh
+```shell
 export MAILGUN_DOMAIN="<Your Mailgun Sandbox Domain>"
 export MAILGUN_API_KEY="<Your Mailgun Private API key>"
 export MAIL_RECIPIENT="<Mail recipient address>"
@@ -125,7 +125,7 @@ make run
 ### Modifying the API definitions
 If you are editing the API definitions, generate the manifests such as CRs or CRDs using:
 
-```sh
+```shell
 make manifests
 ```
 
