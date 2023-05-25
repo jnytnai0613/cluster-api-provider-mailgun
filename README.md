@@ -21,7 +21,14 @@ This Provider sends mail to the destination specified in the Configmap, dependin
 - You must have already registered an account with Mailgun.<br>
 You do not need to create a domain name. In this case, we will use the Sandbox domain.
 ### Running on the cluster
-1. Setting Environment Variables<br>
+1. You can use the pre-compiled manifest from the Cluster API release page, run clusterctl init, or clone cluster-api and use kustomize to apply that manifest.
+```shell
+cd cluster-api
+make envsubst
+kustomize build config/default | envsubst | kubectl apply -f -
+```
+
+2. Setting Environment Variables<br>
 The configmap and secret resources are set using this environment variable.
 ```shell
 export MAILGUN_DOMAIN="<Your Mailgun Sandbox Domain>"
@@ -29,17 +36,17 @@ export MAILGUN_API_KEY="<Your Mailgun Private API key>"
 export MAIL_RECIPIENT="<Mail recipient address>"
 ```
 
-2. Build and push your image to the location specified by `IMG`:
+3. Build and push your image to the location specified by `IMG`:
 ```shell
 make docker-build docker-push IMG=<Your Registry>/cluster-api-provider-mailgun:tag
 ```
 
-3. Deploy the controller to the cluster with the image specified by `IMG`:
+4. Deploy the controller to the cluster with the image specified by `IMG`:
 ```shell
 make deploy IMG=<some-registry>/cluster-api-provider-mailgun:tag
 ```
 
-4. Edit Custom Resources
+5. Edit Custom Resources
 Replace the .spec.requester in MailgunCluster with the Sandbox domain.
 ```yaml
 cat << EOT > config/samples/infrastructure_v1beta1_mailguncluster.yaml
@@ -75,12 +82,12 @@ spec:
 EOT
 ```
 
-5. Install Instances of Custom Resources:
+6. Install Instances of Custom Resources:
 ```shell
 kubectl apply -f config/samples/
 ```
 
-6. Check to see if the mail has been delivered to the address specified in the MAIL_RECIPIENT environment variable.<br>
+7. Check to see if the mail has been delivered to the address specified in the MAIL_RECIPIENT environment variable.<br>
 It is also possible to check from Mailgun's Logs as follows.
 ![Mailgun Log](https://github.com/jnytnai0613/cluster-api-provider-mailgun/blob/main/docs/Mailgun_log.png)
 
