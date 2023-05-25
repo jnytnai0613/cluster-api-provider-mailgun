@@ -80,8 +80,9 @@ EOT
 kubectl apply -f config/samples/
 ```
 
-6. Check to see if the mail has been delivered to the address specified in the MAIL_RECIPIENT environment variable.
+6. Check to see if the mail has been delivered to the address specified in the MAIL_RECIPIENT environment variable.<br>
 It is also possible to check from Mailgun's Logs as follows.
+![Mailgun Log](https://github.com/jnytnai0613/cluster-api-provider-mailgun/blob/Update-README/docs/Mailgun_log.png)
 
 ### Uninstall CRDs
 To delete the CRDs from the cluster:
